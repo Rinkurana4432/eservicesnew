@@ -1,18 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<!-- Top Navbar -->
-<nav class="navbar topbar navbar-expand-lg py-1">
-    <div class="container">
-        <span class="navbar-brand text-white fw-bold">Forest Department</span>
-        <div class="ms-auto">
-             <a href="<?= site_url('dashboard') ?>">Dashboard</a>
-            <!-- <a href="<?= base_url('dashboard') ?>">Dashboard</a> -->
-            <a href="#">GIS Based Application Summary</a>
-            <a href="#">RO Inspection Reports</a>
-            <a href="#">Login</a>
-        </div>
-    </div>
-</nav>
+
 <div class="container  maincls bg-white p-4">
 <div class="container mt-3">
     <div class="bg-light p-2 rounded">

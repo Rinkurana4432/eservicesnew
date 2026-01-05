@@ -9,8 +9,7 @@ class Dashboard_model extends CI_Model
         $this->load->database();
     }
 
-    public function dashboarddetail($fromdate, $todate)
-    {
+    public function dashboarddetail($fromdate, $todate){
         // Format dates safely
         $from_date = date('Y-m-d', strtotime($fromdate));
         $to_date   = date('Y-m-d', strtotime($todate));
@@ -195,4 +194,70 @@ class Dashboard_model extends CI_Model
 
         return $total;
     }
+
+    public function get_gis_summary(){
+    $this->db->select("
+        COUNT(*) AS total,
+        SUM(IF(clar.status = -1, 1, 0)) AS pending,
+        SUM(IF(clar.status = 1, 1, 0)) AS approved,
+        SUM(IF(clar.status = 2, 1, 0)) AS rejected
+    ", false);
+
+    $this->db->from('forest_clarification AS clar');
+    $this->db->join('forest_clar_docs AS doc', 'doc.srn_num = clar.srn', 'inner');
+
+    $this->db->where('clar.user_type', 'Invest Haryana');
+    $this->db->where('clar.req_date >=', '2017-12-25');
+    $this->db->where_in('clar.land_distid', [486, 1587]);
+    $this->db->where('doc.document_label', 'kml_file');
+
+    return $this->db->get()->row_array();
+    }
+
+    public function roinspectionreport($fromdate, $todate){
+        $from_date = date('Y-m-d', strtotime($fromdate));
+        $to_date   = date('Y-m-d', strtotime($todate));
+        $year      = date('Y', strtotime($fromdate));
+
+        /* ================= YEAR 2015 ================= */
+        if ($year == '2015') {
+
+            $sql = "SELECT 
+                        @a:=@a+1 AS SRN,
+                        applicant_name AS Applicant_Name,
+                        status AS Status,
+                        land_location AS Address,
+                        division AS Division,
+                        DATE_FORMAT(req_date,'%d-%m-%Y') AS Request_Date,
+                        DATE_FORMAT(response_date,'%d-%m-%Y') AS Response_Date,
+                        inspection_report AS Report
+                    FROM forest_ro_report, (SELECT @a:=0) a
+                    WHERE DATE(req_date) BETWEEN ? AND ?";
+
+            return $this->db->query($sql, [$from_date, $to_date])->result_array();
+        }
+
+        /* ================= OTHER YEARS ================= */
+
+         $sql = "SELECT 
+                    fm.srn AS SRN,
+                    fm.r_id AS Applicant_Name,
+                    fs.status_name AS Status,
+                    cs.corres_address AS Address,
+                    fm.land_lrid_distid AS Division,
+                    DATE_FORMAT(fm.req_date,'%d-%m-%Y') AS Request_Date,
+                    DATE_FORMAT(fr.response_time,'%d-%m-%Y') AS Response_Date,
+                    fm.ro_doc AS Report
+                FROM forest_main fm
+                LEFT JOIN forest_status fs ON fs.status_id = fm.status
+                LEFT JOIN request_response fr ON fr.response_srn = fm.srn
+                LEFT JOIN correspondance_details cs ON cs.corres_srn = fm.srn
+                WHERE DATE(fm.req_date) BETWEEN ? AND ?";
+
+       
+
+        return $this->db->query($sql, [$from_date, $to_date])->result_array();
+    }
+ 
+
 }

@@ -28,10 +28,23 @@ class Landing extends CI_Controller {
    	//$this->data['department_name'] = 'Forest Department';
    	$this->data['pageTitle']= 'Forest Department - Login';
 	$this->data['breadcrumbs'] = array('Login');
+    $this->data['constantx'] = AUTHORIZATION_ENDPOINT;
 		$this->load->view('layout/header', $this->data);
 		$this->load->view('landingView',$this->data);
 		$this->load->view('layout/footer', $this->data);
 	}
+
+    public function cscconnect() {
+        session_start();
+        $state = rand(10000, 99999);
+        $_SESSION['connect_state'] = $state;
+        $redirectUri = CLIENT_CALLBACK_URI; //echo $redirectUri;die;
+        $auth_parameters =
+            "response_type=code&client_id=" . CLIENT_ID .
+            "&redirect_uri=" . $redirectUri . "&state=" . $state;
+        $url = AUTHORIZATION_ENDPOINT . "?" . $auth_parameters;
+        header("Location:" . $url); //echo $url;die;
+    }
 
 
 

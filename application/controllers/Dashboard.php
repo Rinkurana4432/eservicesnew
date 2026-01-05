@@ -45,7 +45,7 @@ class Dashboard extends CI_Controller
 
             $result = $this->Dashboard_model->dashboarddetail($fromdate, $todate);
 
-            
+
         }
 
         $this->data['from_date'] = $fromdate;
@@ -56,4 +56,44 @@ class Dashboard extends CI_Controller
         $this->load->view('dashboard/index', $this->data);
         $this->load->view('layout/footer', $this->data);
     }
+
+
+    public function gisindex(){
+        $this->data['pageTitle']   = 'GIS Based Applications Summary';
+        $this->data['breadcrumbs'] = array('Dashboard');
+        $this->data['gis'] = $this->Dashboard_model->get_gis_summary();
+        $this->data['total']    = $this->data['gis']['total']    ?? 0;
+        $this->data['pending']  = $this->data['gis']['pending']  ?? 0;
+        $this->data['approved'] = $this->data['gis']['approved'] ?? 0;
+        $this->data['rejected'] = $this->data['gis']['rejected'] ?? 0;
+
+         $this->data['totalBlockApproved'] =
+        $this->data['pending'] + $this->data['approved'];
+
+        $this->load->view('layout/header', $this->data);
+        $this->load->view('dashboard/gisview', $this->data);
+        $this->load->view('layout/footer');
+    }
+
+    public function roinspectionReport(){
+        $this->data['pageTitle'] = 'RO Inspection Reports';
+        $this->data['breadcrumbs'] = array('Dashboard');
+        $fromdate = $this->input->get('from_date', TRUE);
+        $todate   = $this->input->get('to_date', TRUE);
+
+        $this->data['fromdate'] = $fromdate;
+        $this->data['todate']   = $todate;
+       $this->data['records']  = [];
+
+        if (!empty($fromdate) && !empty($todate)) {
+            $this->data['records'] = $this->Dashboard_model->roinspectionreport($fromdate, $todate);
+        }
+
+        $this->load->view('layout/header', $this->data);
+        $this->load->view('dashboard/roinspection_report', $this->data);
+        $this->load->view('layout/footer');
+
+    }
+
+
 }

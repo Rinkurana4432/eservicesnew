@@ -50,10 +50,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'landing';
+$route['cscconnect'] = 'landing/cscconnect';
 
 $route['dashboard'] = 'dashboard/index';
 $route['dashboard/view'] = 'dashboard/view';
 
+$route['gisdetails'] = 'dashboard/gisindex';
+$route['roinspection'] = 'dashboard/roinspectionReport';
 
 
 $route['404_override'] = '';

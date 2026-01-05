@@ -1,18 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <!-- Top Navbar -->
-<nav class="navbar topbar navbar-expand-lg py-1">
-    <div class="container">
-        <span class="navbar-brand text-white fw-bold">Forest Department</span>
-        <div class="ms-auto">
-             <a href="<?= site_url('dashboard') ?>">Dashboard</a>
-            <!-- <a href="<?= base_url('dashboard') ?>">Dashboard</a> -->
-            <a href="#">GIS Based Application Summary</a>
-            <a href="#">RO Inspection Reports</a>
-            <a href="#">Login</a>
-        </div>
-    </div>
-</nav>
+
 
 <!-- Breadcrumb -->
 <div class="maincls bg-white p-4">
@@ -33,6 +22,7 @@
             <table class="table table-bordered mb-0">
                 <thead class="table-light">
                     <tr>
+
                         <th>Sr. No.</th>
                         <th>Name of Service</th>
                         <th>Time Limit</th>
@@ -83,18 +73,41 @@
             'CSC Connect',
             'Industrial Login'
         ];
-        foreach ($logins as $login):
+       
         ?>
         <div class="col-md-3">
             <div class="border text-center p-4 h-100">
-                <h5><?= $login ?></h5>
+                <h5>Department Login</h5>
                 <button class="btn btn-primary btn-sm mt-2">Login</button>
-                <?php if ($login !== 'Department Login'): ?>
-                    <a href="#" class="d-block mt-2 small">Download User Manual</a>
-                <?php endif; ?>
-            </div>
+                  <a href="#" class="d-block mt-2 small">Download User Manual</a>
+             </div>
         </div>
-        <?php endforeach; ?>
+         <div class="col-md-3">
+            <div class="border text-center p-4 h-100">
+                <h5>Self Login</h5>
+                <form class="form-signin" id="self" method="post" action="">
+                    <button class="btn btn-primary btn-sm mt-2">Login</button>
+                </form>
+                  <a href="#" class="d-block mt-2 small">Download User Manual</a>
+             </div>
+        </div>
+        <div class="col-md-3">
+            <div class="border text-center p-4 h-100">
+                <h5>CSC Connect</h5>
+                 <form class="form-signin" id="csclogin" method="post" action="<?=base_url();?>cscconnect">
+                <input type="submit" class="btn btn-primary btn-sm mt-2" data-loading-text="Loading..." value="Login" />
+            </form>
+                  <a href="#" class="d-block mt-2 small">Download User Manual</a>
+             </div>
+        </div>
+         <div class="col-md-3">
+            <div class="border text-center p-4 h-100">
+                <h5>Industrial Login</h5>
+                <button class="btn btn-primary btn-sm mt-2">Login</button>
+                  <a href="#" class="d-block mt-2 small">Download User Manual</a>
+             </div>
+        </div>
+      
     </div>
 </div>
 

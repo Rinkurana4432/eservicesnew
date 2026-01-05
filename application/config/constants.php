@@ -83,3 +83,22 @@ defined('EXIT_USER_INPUT')     OR define('EXIT_USER_INPUT', 7); // invalid user 
 defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+
+
+
+
+/*Constants added new*/
+if (!defined('AUTHORIZATION_ENDPOINT')) {
+    define('AUTHORIZATION_ENDPOINT', 'https://connect.csc.gov.in/account/authorize');
+}
+
+if (!defined('CLIENT_ID')) {
+    define('CLIENT_ID', '9b23d980-bc6a-4f9b-a9d5-791dee994458');
+}
+
+if (!defined('CLIENT_CALLBACK_URI')) {
+    define(
+        'CLIENT_CALLBACK_URI',
+        'https://' . $_SERVER['SERVER_NAME'] . '/eservicesnew/cscconnect/'
+    );
+}
