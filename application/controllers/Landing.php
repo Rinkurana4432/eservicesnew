@@ -46,6 +46,10 @@ class Landing extends CI_Controller {
         header("Location:" . $url); //echo $url;die;
     }
 
+    public function test()
+    {
+       echo "test function";
+    }
 
 
 
