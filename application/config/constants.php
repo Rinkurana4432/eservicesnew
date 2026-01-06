@@ -102,3 +102,35 @@ if (!defined('CLIENT_CALLBACK_URI')) {
         'https://' . $_SERVER['SERVER_NAME'] . '/eservicesnew/cscconnect/'
     );
 }
+if (!defined('INVEST_HARYANA_CONNECT')) {
+    define('INVEST_HARYANA_CONNECT', 'https://investharyana.in');
+}
+
+if (!defined('REDIRECT_URI')) {
+   define(
+        'REDIRECT_URI',
+        'https://' . $_SERVER['SERVER_NAME'] . '/eservicesnew/connect_success/'
+    );
+}
+
+
+if (!defined('CLIENT_SECRET')) {
+    define('CLIENT_SECRET', 'EiT8fN7hKAGy');
+}
+
+if (!defined('TOKEN_ENDPOINT')) {
+    define('TOKEN_ENDPOINT', 'https://connect.csc.gov.in/account/token');
+}
+
+if (!defined('RESOURCE_URL')) {
+    define('RESOURCE_URL', 'https://connect.csc.gov.in/account/resource');
+}
+
+
+
+define("USERNAME","hryfrteservices");
+define("PASSWORD","Plpa12345#@");
+define("SENDERID","HRYFRT");
+define("TEMPLATEID", "1107159973383800073");
+define("DEPTSECUREKEY","64c2c62a-ddcf-4b7d-94b4-f5d9d090a0a6");
+define('privateKey','fDpt@cSc');

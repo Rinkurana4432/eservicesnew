@@ -254,10 +254,14 @@ class Dashboard_model extends CI_Model
                 LEFT JOIN correspondance_details cs ON cs.corres_srn = fm.srn
                 WHERE DATE(fm.req_date) BETWEEN ? AND ?";
 
-       
+
 
         return $this->db->query($sql, [$from_date, $to_date])->result_array();
     }
+
+
+
+    
  
 
 }

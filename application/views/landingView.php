@@ -85,7 +85,7 @@
          <div class="col-md-3">
             <div class="border text-center p-4 h-100">
                 <h5>Self Login</h5>
-                <form class="form-signin" id="self" method="post" action="">
+                <form class="form-signin" id="self" method="post" action="<?=base_url(); ?>selfloginview">
                     <button class="btn btn-primary btn-sm mt-2">Login</button>
                 </form>
                   <a href="#" class="d-block mt-2 small">Download User Manual</a>
@@ -100,11 +100,14 @@
                   <a href="#" class="d-block mt-2 small">Download User Manual</a>
              </div>
         </div>
+        <?php  $industrialConnect = INVEST_HARYANA_CONNECT; ?>
          <div class="col-md-3">
             <div class="border text-center p-4 h-100">
                 <h5>Industrial Login</h5>
+                <form class="form-signin" action="<?=$industrialConnect?>">
                 <button class="btn btn-primary btn-sm mt-2">Login</button>
                   <a href="#" class="d-block mt-2 small">Download User Manual</a>
+              </form>
              </div>
         </div>
       

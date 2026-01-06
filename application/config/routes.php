@@ -51,6 +51,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'landing';
 $route['cscconnect'] = 'landing/cscconnect';
+$route['selfloginview'] = 'landing/selfloginview';
+$route['selflogin'] = 'landing/selflogin';
 
 $route['dashboard'] = 'dashboard/index';
 $route['dashboard/view'] = 'dashboard/view';

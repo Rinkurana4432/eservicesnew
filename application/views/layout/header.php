@@ -12,7 +12,7 @@
         <?php endforeach; ?>
     <?php endif; ?>
 </head>
-<body>
+<body data-baseurl="<?= base_url(); ?>">
     <nav class="navbar topbar navbar-expand-lg py-1">
         <div class="container">
             <a href="<?= base_url() ?>"><span class="navbar-brand text-white fw-bold">Forest Department</span></a>
