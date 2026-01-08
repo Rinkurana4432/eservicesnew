@@ -1,6 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+    function is_login(){
+        $CI =& get_instance();
+        return $CI->session->userdata('is_login') === TRUE;
+    }
+
     function generate_otp($length = 6){
         if (!is_numeric($length) || $length < 1) {
             $length = 6;
@@ -107,3 +112,114 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     $result = json_decode($response, true);
     return $result[0][0][0] ?? $text;
 }
+
+
+function initLogin($time = null){
+        $CI =& get_instance(); // Get CI instance
+        $CI->load->library('session');
+
+        // Get resident ID from session
+        $RID = $CI->session->userdata('residentId');
+
+        // Get user agent and IP
+        $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+        $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+
+        // Generate hash
+        $hash = $ua . "_" . $ip . "_" . $RID;
+        $hash = hash_hmac("sha1", $hash, "orphan");
+
+        // Set secure cookie
+        $cookie = array(
+            'name'   => 'iviss_cookie',
+            'value'  => $hash,
+            'expire' => 0, // session cookie
+            'secure' => true,  // send over HTTPS only
+            'httponly' => true,
+        );
+        set_cookie($cookie);
+
+        // Call user visit log function (you need to convert this too in CI if it's Yii specific)
+        if (function_exists('userVisitLogs')) {
+            userVisitLogs($time, 'login');
+        }
+    }
+
+    function logoutUser(){
+        $CI =& get_instance();
+        $CI->load->library('session');
+        $CI->load->helper('cookie'); // For deleting cookies
+        $CI->load->database();
+
+        // Log the logout time
+        $logoutTime = time();
+        userVisitLogs($logoutTime, 'logout'); // call the CI version of userVisitLogs
+
+        // Delete cookies
+        delete_cookie('iviss_cookie');
+        delete_cookie('PHPSESSID');
+
+        // Destroy session
+        $CI->session->sess_destroy();
+
+        // Set flash message
+        $CI->session->set_flashdata('error', "Invalid refresh token!");
+    }
+
+    function userVisitLogs($time, $activity){
+        if (isset($time) && isset($activity)) {
+
+            $CI =& get_instance(); // get CI instance
+            $CI->load->library('session');
+            $CI->load->database(); // load default database
+
+            $residentId = '';
+            $userType = '';
+
+            // Resident login (default or self)
+            if ($CI->session->userdata('residentId')) {
+                $userType = 'Operator';
+                if ($CI->session->userdata('userType') == 'self') {
+                    $userType = 'Self Login';
+                }
+                $residentId = $CI->session->userdata('residentId');
+
+            } 
+            // Invest Haryana login
+            elseif ($CI->session->userdata('investProjectId')) {
+                $residentId = $CI->session->userdata('investProjectId');
+                $userType = 'Invest Haryana';
+            } 
+            // CSC login
+            elseif ($CI->session->userdata('User')['username']) {
+                $userType = 'CSC User';
+                $cscId = $CI->session->userdata('User')['csc_id'];
+                $userName = $CI->session->userdata('User')['username'];
+
+                // Fetch CSC resident ID
+                $cscRow = $CI->db
+                    ->where('name', $userName)
+                    ->where('csc_id', $cscId)
+                    ->limit(1)
+                    ->get('forest_newcsc_info')
+                    ->row_array();
+
+                if (!empty($cscRow)) {
+                    $residentId = $cscRow['csc_rid'];
+                }
+            }
+
+            $systemIp = $_SERVER['REMOTE_ADDR'];
+
+            // Insert log
+            $logData = array(
+                'resident_id'    => $residentId,
+                'idm_token'      => $systemIp,
+                'event'          => $activity,
+                'originating_url'=> $userType,
+                'time_stamp'     => $time
+            );
+
+            $CI->db->insert('idm_logs', $logData);
+        }
+    }

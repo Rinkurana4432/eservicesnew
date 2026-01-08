@@ -62,6 +62,8 @@ $route['dashboard/view'] = 'dashboard/view';
 $route['gisdetails'] = 'dashboard/gisindex';
 $route['roinspection'] = 'dashboard/roinspectionReport';
 
+$route['pdf'] = 'files/pdf';
+
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

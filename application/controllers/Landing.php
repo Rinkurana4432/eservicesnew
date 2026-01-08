@@ -9,7 +9,7 @@ class Landing extends CI_Controller {
         // }
         $this->load->helper(['url', 'function']);
         $this->load->library('session');
-        $this->load->database();
+         $this->db =$this->load->database();
         $this->db2 = $this->load->database('second', TRUE);
         $this->load->library('session');
 
@@ -24,7 +24,7 @@ class Landing extends CI_Controller {
             base_url('assets/js/custom.js')
         ];
 
-        $this->data['copyright'] = '© 2026 Haryana Government. All Rights Reserved.';
+        //$this->data['copyright'] = '© 2026 Haryana Government. All Rights Reserved.';
 
 
     }    
@@ -177,92 +177,193 @@ public function connect_success() {
  }
 
 
- public function selflogin(){
-        // Allow only POST
+ 
+
+    public function selflogin(){
+        $this->load->database();
         if ($this->input->server('REQUEST_METHOD') === 'GET') {
             show_error('Access denied', 401);
         }
-
-        if ($this->input->post()) {
-
+        if ($this->input->method(TRUE) === 'POST') {
             $post = $this->security->xss_clean($this->input->post());
 
             /**
-             * ===============================
+             * ---------------------------
              * LOGIN USING UID
-             * ===============================
+             * ---------------------------
              */
             if (!empty($post['uid'])) {
+                $uid = $post['uid'];
+                $query = $this->db2->where('Resident_UID', $uid)->get('tblResident');
+                $row = $query->row_array();
+                if (!empty($row)) {
+                    if (!empty($row['Mobile_Number'])) {
+                        $mobileNo = $row['Mobile_Number'];
+                        $HMAC_KEY = privateKey;
+                        $HMAC = hash_hmac('sha1', $HMAC_KEY . $mobileNo, $HMAC_KEY);
+                        $otp =  generate_otp(4);
+                        $messageStr = 'You requested OTP for Forest Dept. login. Your OTP is ' . $otp . '. Please DO NOT SHARE it with anyone.';
+                        try {
+                            sendOtpSms($mobileNo,$messageStr);
 
-                $uid = trim($post['uid']);
+                            // insert OTP
+                           
+                            $createdTmStmp = time();
+                            $data2 = [
+                                    'otp_code' => $otp,
+                                    'mobile_number' => $mobileNo,
+                                    'created_timestamp' => $createdTmStmp
+                                ];
 
-                $row = $this->db2
-                    ->where('Resident_UID', $uid)
-                    ->get('tblResident')
-                    ->row_array();
+                                $this->db->insert('otp_info', $data2);
 
-                if (!$row) {
-                    $this->session->set_flashdata('error', 'No user with provided UID exists!');
-                    redirect('landing/selfloginview');
+                            $data['post'] = ['mobile' => $mobileNo,'HMAC'   => $HMAC];
+                             $this->load->view('layout/header', $this->data);
+                             $this->load->view('validateotp', $data);
+                             $this->load->view('layout/footer', $this->data);
+                                return;
+                        } catch (Exception $e) {
+                            $this->session->set_flashdata('error', 'Something went wrong! Unable to send SMS. Please try again.');
+                        }
+                    } else {
+                        $this->session->set_flashdata('error', "Mobile no. corresponding to provided UID doesn't exist!");
+                    }
+                } else {
+                    $this->session->set_flashdata('error', 'No user with provided UID exists! Please choose another option to login.');
                 }
-
-                if (empty($row['Mobile_Number'])) {
-                    $this->session->set_flashdata('error', 'Mobile number not found for this UID.');
-                    redirect('landing/selfloginview');
-                }
-
-                $mobileNo = $row['Mobile_Number'];
-                $otp =  generate_otp(4);
-
-                $this->db->insert('otp_info', ['otp_code' => $otp,'mobile_number' => $mobileNo,'created_timestamp' => time()]);
-
-                sendOtpSms($mobileNo,"Your OTP for Forest Dept login is {$otp}. Do not share.");
-
-                $this->load->view('validateotp', [
-                    'mobile' => $mobileNo
-                ]);
-                return;
             }
 
             /**
-             * ===============================
-             * LOGIN USING MOBILE + YEAR 
-             * ===============================
+             * ---------------------------
+             * LOGIN USING MOBILE + YEAR
+             * ---------------------------
              */
-            if (!empty($post['mobile']) && !empty($post['year'])) {
+            elseif (!empty($post['mobile']) && !empty($post['year'])) {
+                $mobileNo     = trim($post['mobile']);
+                $yearOfBirth  = trim($post['year']);
+                $sql = "SELECT COUNT(*) AS count FROM tblResident WHERE Mobile_Number = ? AND YEAR(Date_of_Birth) = ? AND refEvent_Init = 1 LIMIT 1";
+                $query = $this->db2->query($sql, [$mobileNo, $yearOfBirth]);
+                $row   = $query->row_array();
+                if ($row['count'] == 1) {
+                    $HMAC_KEY = privateKey;
+                    $HMAC = hash_hmac('sha1', $HMAC_KEY . $mobileNo, $HMAC_KEY);
+                    $otp =generate_otp(4);
+                    $messageStr = 'You requested an OTP for Forest Dept. login. Your OTP is ' . $otp . '. Please DO NOT SHARE it with anyone.';
+                    try {
+                      sendOtpSms($mobileNo,$messageStr);
+                       $createdTmStmp = time();
 
-                $mobileNo = trim($post['mobile']);
-                $year = trim($post['year']);
+                       //echo $createdTmStmp;die();
+                            $data2 = [
+                                    'otp_code' => $otp,
+                                    'mobile_number' => $mobileNo,
+                                   'created_timestamp' => $createdTmStmp
+                                ];
 
-                $count = $this->db2
-                    ->where('Mobile_Number', $mobileNo)
-                    ->where('YEAR(Date_of_Birth)', $year, FALSE)
-                    ->where('refEvent_Init', 1)
-                    ->count_all_results('tblResident');
+                        $this->db->insert('otp_info', $data2);
+                        //echo $this->db->last_query();die();
 
-                if ($count !== 1) {
+                        $data['post'] = [
+                            'mobile' => $mobileNo,
+                            'HMAC'   => $HMAC
+                        ];
+                        $this->load->view('layout/header', $this->data);
+                        $this->load->view('validateotp', $data);
+                        $this->load->view('layout/footer', $this->data);
+                        return;
+
+                    } catch (Exception $e) {
+                        $this->session->set_flashdata('error', 'Something went wrong! Unable to send SMS. Please try again.');
+                    }
+
+                } else {
                     $this->session->set_flashdata('error', 'Invalid credentials!');
-                    redirect('landing/selfloginview');
                 }
-
-                $otp =generate_otp(4);
-
-                $this->db->insert('otp_info', ['otp_code' => $otp,'mobile_number' => $mobileNo,'created_timestamp' => time()]);
-
-                sendOtpSms($mobileNo,"Your OTP for Forest Dept login is {$otp}. Do not share.");
-
-                $this->load->view('validateotp', ['mobile' => $mobileNo]);
-                return;
             }
-
-            $this->session->set_flashdata('error', 'Invalid request!');
-            redirect('landing/selfloginview');
         }
 
-        // load page
-        $this->load->view('selfloginview');
-    }
+        // default view
+        $this->load->view('auth/selflogin');
+    }//
 
+
+
+    public function validateotp(){
+        if ($this->input->method(TRUE) === 'POST') {
+            $post = $this->security->xss_clean($this->input->post());
+            
+            if (!empty($post['otp'])) {
+                $mobField = base64_encode('mo');
+                $mobileNo = base64_decode($post[$mobField]);
+
+                // generate HMAC
+                $HMAC_KEY = privateKey;
+                $HMAC = hash_hmac('sha1', $HMAC_KEY . $mobileNo, $HMAC_KEY);
+
+                if ($post['HMAC'] == $HMAC) {
+
+                    $otp = $post['otp'];
+
+                    // check OTP
+                    $this->load->database();
+                    $sql = "SELECT COUNT(*) AS count FROM otp_info WHERE otp_code = ? AND mobile_number = ? ORDER BY created_timestamp DESC LIMIT 1";
+
+                    $query = $this->db->query($sql, [$otp, $mobileNo]);
+                    $row   = $query->row_array();
+
+                   
+
+                    if ($row['count'] == 1) {
+
+                        // fetch resident
+                        $resQuery = $this->db2->where('Mobile_Number', $mobileNo)->limit(1)->get('tblResident');
+
+                        $resRow = $resQuery->row_array();
+                        $residentId = $resRow['Resident_ID'];
+
+                        // session set
+                        $this->session->set_userdata(['residentId' => $residentId,'userType'   => 'self']);
+
+                        
+                        $loginAttribs = [
+                            'username'   => 'demo',
+                            'password'   => 'demo',
+                            'rememberMe'=> '0'
+                        ];
+
+                        //$this->load->model('Login_model');
+                       // if ($this->Login_model->login($loginAttribs)) {
+                        if ($row['count'] == 1) {
+
+                            $loginTime = time();
+                            initLogin($loginTime);
+
+                            redirect(base_url('user/services'), 'refresh');
+
+                        } else {
+                           logoutUser();
+                            $this->session->set_flashdata(
+                                'error',
+                                'Access Denied (You are not the Authorized Person)'
+                            );
+                        }
+
+                    } else {
+                        $data['error'] = 'OTP mismatch! Please try again.';
+                        $this->load->view('validateotp', $data);
+                        return;
+                    }
+
+                } else {
+                    $data['error'] = 'Mobile number has been tampered! Please try again.';
+                    $this->load->view('validateotp', $data);
+                    return;
+                }
+            }
+        }
+
+        $this->load->view('validateotp');
+    }
 
     public function logout(){
     
@@ -277,6 +378,5 @@ public function connect_success() {
     }
 
 
-
-
 }
+

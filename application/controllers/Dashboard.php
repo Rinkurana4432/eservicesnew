@@ -21,7 +21,7 @@ class Dashboard extends CI_Controller
             base_url('assets/js/custom.js')
         ];
 
-        $this->data['copyright'] = '© 2026 Haryana Government. All Rights Reserved.';
+        //$this->data['copyright'] = '© 2026 Haryana Government. All Rights Reserved.';
     }
 
     public function index(){

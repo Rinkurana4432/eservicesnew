@@ -22,7 +22,6 @@
             <table class="table table-bordered mb-0">
                 <thead class="table-light">
                     <tr>
-
                         <th>Sr. No.</th>
                         <th>Name of Service</th>
                         <th>Time Limit</th>
@@ -34,18 +33,18 @@
                         <td>1</td>
                         <td>Permission for felling of trees in areas notified under section-4 of Haryana Land Preservation Act, 1900</td>
                         <td>30 Days</td>
-                        <td><a href="https://164.100.137.243/eservices/iviss/pdf/manuals/PermissionforfellingoftreesinGeneralSection4AreasHaryanaLandandPreservationAct1900.pdf">Click here to download</a></td>
+                        <td><a href="<?php echo base_url() ?>files/pdf/PermissionforfellingoftreesinGeneralSection4AreasHaryanaLandandPreservationAct1900.pdf" target="_blank">Click here to download</a></td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td>NOC in respect of Haryana Land Preservation Act, 1900 or Forest / Restricted lands</td>
                         <td>30 Days</td>
-                        <td><a href="https://164.100.137.243/eservices/iviss/pdf/manuals/NOCinrespectofPLPAorForestorRestrictedLands.pdf">Click here to download</a></td>
+                        <td><a href="<?php echo base_url() ?>files/pdf/NOCinrespectofPLPAorForestorRestrictedLands.pdf">Click here to download</a></td>
                     </tr>
                     <tr>
 						<td colspan="4">
-						Areas of  Haryana State under Punjab Land Preservation Act, 1900 (PLPA) : <a target="_blank" href="https://164.100.137.243/eservices/iviss/pdf/landingPagePDF/PLPA Areas.pdf"><b>1. PLPA Areas</b></a><br/>	
-						<a style="margin-left:405px" target="_blank" href="https://164.100.137.243/eservices/iviss/pdf/landingPagePDF/Sonepat District PLPA Areas.pdf"><b>2. Sonepat District PLPA Area</b></a>
+						Areas of  Haryana State under Punjab Land Preservation Act, 1900 (PLPA) : <a target="_blank" href="<?php echo base_url() ?>files/pdf/PLPA Areas.pdf"><b>1. PLPA Areas</b></a><br/>	
+						<a style="margin-left:405px" target="_blank" href="<?php echo base_url() ?>files/pdf/Sonepat District PLPA Areas.pdf"><b>2. Sonepat District PLPA Area</b></a>
 						</td>
 					</tr>
 					<tr>
@@ -79,7 +78,7 @@
             <div class="border text-center p-4 h-100">
                 <h5>Department Login</h5>
                 <button class="btn btn-primary btn-sm mt-2">Login</button>
-                  <a href="#" class="d-block mt-2 small">Download User Manual</a>
+                  
              </div>
         </div>
          <div class="col-md-3">
@@ -88,7 +87,7 @@
                 <form class="form-signin" id="self" method="post" action="<?=base_url(); ?>selfloginview">
                     <button class="btn btn-primary btn-sm mt-2">Login</button>
                 </form>
-                  <a href="#" class="d-block mt-2 small">Download User Manual</a>
+                  <a href="<?php echo base_url(); ?>files/pdf/SelfloginUserManual.pdf" class="d-block mt-2 small" target="_blank">Download User Manual</a>
              </div>
         </div>
         <div class="col-md-3">
@@ -97,7 +96,7 @@
                  <form class="form-signin" id="csclogin" method="post" action="<?=base_url();?>cscconnect">
                 <input type="submit" class="btn btn-primary btn-sm mt-2" data-loading-text="Loading..." value="Login" />
             </form>
-                  <a href="#" class="d-block mt-2 small">Download User Manual</a>
+                  <a href="<?php echo base_url(); ?>files/pdf/CSCUserManual.pdf" class="d-block mt-2 small" target="_blank">Download User Manual</a>
              </div>
         </div>
         <?php  $industrialConnect = INVEST_HARYANA_CONNECT; ?>
@@ -106,7 +105,7 @@
                 <h5>Industrial Login</h5>
                 <form class="form-signin" action="<?=$industrialConnect?>">
                 <button class="btn btn-primary btn-sm mt-2">Login</button>
-                  <a href="#" class="d-block mt-2 small">Download User Manual</a>
+                  <a href="<?php echo base_url(); ?>files/pdf/InvestHaryanaUserManual.pdf" class="d-block mt-2 small" target="_blank">Download User Manual</a>
               </form>
              </div>
         </div>
@@ -118,15 +117,19 @@
 <div class="container mt-5 text-center">
 	 <div class="text-center">
                     <a href="http://saralharyana.gov.in/" target="_blank">
-				    <img src="<?= base_url('assets/img/Antyodaya-Saral-Logo-new.png') ?>" width="120" alt="Antyodaya Saral">
+				    <img src="<?= base_url('files/img/Antyodaya-Saral-Logo-new.png') ?>" width="120" alt="Antyodaya Saral">
 				</a>                    
                </div> 
     <p class="fw-bold">
         Forest Department eServices are now also available on Antyodaya SARAL
     </p>
    <p>To avail schemes or services, please visit <a href="http://saralharyana.gov.in/" target="_blank">www.saralharyana.gov.in
-					 </a><a target="_blank" href="https://164.100.137.243/eservices/iviss/pdf/manuals/SARALHARYAN.pdf"><b>(Download User Manual for SARAL Portal)</b> </a>
-					</p>
+
+	 </a><a target="_blank" href="<?php echo base_url(); ?>files/pdf/SARALHARYAN.pdf"><b>(Download User Manual for SARAL Portal)</b> </a>
+	</p>
+    <p>OR</p>
+    <p>visit Antyodaya Kendras (<a href="/eservices/dashboard/downloadfile?doc=saral-kendras.pdf">List of  Antyodaya SARAL Kendras</a>)</p>
+    <p>For any queries to schemes/services, please call 0172-3968400 <sup style="color: red;">*7:00 AM - 8:00 PM (Monday to Saturday, excluding Government Holidays)</sup></p>
 
 
 </div>
