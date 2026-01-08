@@ -1,3 +1,37 @@
+    /*Loader Css*/      
+#modalwindow {
+        display:none;
+    }
+    
+#modalwindow img, .modalwindowimg {
+        opacity:1;
+        filter:alpha(opacity=100);
+        margin:100px;
+       
+    }
+.modalshow{
+        position:fixed;
+        top:0px;
+        left:0px;
+        background-color:#FFF;
+        opacity:0.8;
+        filter:alpha(opacity=80);
+        color:#000;
+        z-index:9999999;
+        display:block;
+        padding:100px;
+        text-align:center;
+    }
+
+    .modalhide{
+        position:fixed;
+        top:0px;
+        left:0px;
+        display:none;
+    }
+
+    .hidden{display: none;}
+   /*Loader Css*/  
     a{text-decoration:none; }
 
     .navbar a:hover {
@@ -34,4 +68,5 @@ body {
 
 a, a:hover, .sidebar-nav ul > li > a, .sidebar-nav ul > li > a:hover, .summary-number {
     color: #1d2e7b;
-}        
+}  
+

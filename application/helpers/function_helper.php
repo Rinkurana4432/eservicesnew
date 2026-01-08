@@ -83,3 +83,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
     }
 
+ function activedistrictsbystateid($state_id){
+        // Get CI instance
+        $CI =& get_instance();
+
+        // Load second database
+        $db2 = $CI->load->database('second', TRUE);
+
+        $db2->select('tlr.LR_Name, tlr.LR_ID, dist.isFellingApplicable');
+        $db2->from('tblLandRegion AS tlr');
+        $db2->join('tblDistrict AS dist', 'dist.District_ID = tlr.LR_ID', 'left');
+        $db2->where('dist.State_ID', $state_id);
+
+        $query = $db2->get();
+
+        return $query->result_array();
+    }
+
+
+  function engtohin($text) {
+    $url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=hi&dt=t&q=' . urlencode($text);
+    $response = file_get_contents($url);
+    $result = json_decode($response, true);
+    return $result[0][0][0] ?? $text;
+}

@@ -53,6 +53,8 @@ $route['default_controller'] = 'landing';
 $route['cscconnect'] = 'landing/cscconnect';
 $route['selfloginview'] = 'landing/selfloginview';
 $route['selflogin'] = 'landing/selflogin';
+$route['user_regisrtation'] = 'registration/step1';
+$route['saveuserdetails'] = 'registration/submitform';
 
 $route['dashboard'] = 'dashboard/index';
 $route['dashboard/view'] = 'dashboard/view';
